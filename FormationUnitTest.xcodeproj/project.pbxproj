@@ -12,6 +12,7 @@
 		1102A150231BD9C100C0571B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1102A14E231BD9C100C0571B /* Main.storyboard */; };
 		1102A152231BD9C200C0571B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1102A151231BD9C200C0571B /* Assets.xcassets */; };
 		1102A155231BD9C200C0571B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1102A153231BD9C200C0571B /* LaunchScreen.storyboard */; };
+		1102A173231BDB6800C0571B /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1102A172231BDB6800C0571B /* Calculator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 		1102A156231BD9C200C0571B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1102A15B231BD9C200C0571B /* FormationUnitTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FormationUnitTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1102A161231BD9C200C0571B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1102A172231BDB6800C0571B /* Calculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 		1102A149231BD9C100C0571B /* FormationUnitTest */ = {
 			isa = PBXGroup;
 			children = (
+				1102A170231BDB5200C0571B /* Common */,
 				1102A16B231BDA1900C0571B /* Scenes */,
 				1102A16A231BD9FF00C0571B /* Resources */,
 				1102A14A231BD9C100C0571B /* AppDelegate.swift */,
@@ -123,6 +126,22 @@
 				1102A153231BD9C200C0571B /* LaunchScreen.storyboard */,
 			);
 			path = LaunchScreen;
+			sourceTree = "<group>";
+		};
+		1102A170231BDB5200C0571B /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				1102A171231BDB5800C0571B /* Helpers */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		1102A171231BDB5800C0571B /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				1102A172231BDB6800C0571B /* Calculator.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -228,6 +247,7 @@
 			files = (
 				1102A14D231BD9C100C0571B /* ViewController.swift in Sources */,
 				1102A14B231BD9C100C0571B /* AppDelegate.swift in Sources */,
+				1102A173231BDB6800C0571B /* Calculator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
