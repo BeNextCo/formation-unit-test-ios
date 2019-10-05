@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class Network {
+class Network {
     func fetchUsers() -> [User] {
         return []
     }

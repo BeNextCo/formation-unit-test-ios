@@ -13,8 +13,8 @@ final class MetiersFaitQuelqueChose {
 
     private var network: Network
 
-    init() {
-        self.network = Network()
+    init(network: Network) {
+        self.network = network
     }
 
     func getUsers() -> [User] {
