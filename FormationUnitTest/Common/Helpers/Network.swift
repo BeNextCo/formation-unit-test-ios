@@ -10,10 +10,17 @@ import Foundation
 
 protocol NetworkProtocol {
     func fetchUsers() -> [User]
+    func fetchUser(by id: Int) -> User?
 }
 
 class Network: NetworkProtocol {
     func fetchUsers() -> [User] {
         return []
+    }
+
+    func fetchUser(by id: Int) -> User? {
+        // execute a query in a Database ...
+
+        return nil
     }
 }
