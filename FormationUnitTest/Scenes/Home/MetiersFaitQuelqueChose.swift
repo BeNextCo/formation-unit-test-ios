@@ -11,10 +11,12 @@ import Foundation
 final class MetiersFaitQuelqueChose {
     // MARK: - Properties
 
-    private var network: Network
+    private let network: Network
+    private let calculator: Calculator
 
-    init(network: Network) {
+    init(network: Network, calculator: Calculator) {
         self.network = network
+        self.calculator = calculator
     }
 
     func getUsers() -> [User] {
