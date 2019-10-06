@@ -17,7 +17,7 @@ class MetiersFaitQuelqueChoseTests: XCTestCase {
         // Given
 
 
-        let metier = MetiersFaitQuelqueChose(network: NetworkTest(), calculator: CalculatorDummy())
+        let metier = MetiersFaitQuelqueChose(network: FakeNetwork())
 
         // When
 
@@ -29,13 +29,9 @@ class MetiersFaitQuelqueChoseTests: XCTestCase {
     }
 }
 
-private class NetworkTest: Network {
+private class FakeNetwork: NetworkProtocol {
 
-    override func fetchUsers() -> [User] {
+    func fetchUsers() -> [User] {
         return [User(identifier: 1, username: "Ben Arfa")]
     }
-}
-
-private class CalculatorDummy: Calculator {
-
 }

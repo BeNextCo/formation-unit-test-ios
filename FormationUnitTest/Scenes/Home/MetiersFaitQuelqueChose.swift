@@ -11,16 +11,15 @@ import Foundation
 final class MetiersFaitQuelqueChose {
     // MARK: - Properties
 
-    private let network: Network
-    private let calculator: Calculator
+    private let network: NetworkProtocol
+    private var users: [User] = []
 
-    init(network: Network, calculator: Calculator) {
+    init(network: NetworkProtocol) {
         self.network = network
-        self.calculator = calculator
     }
 
     func getUsers() -> [User] {
-        let users = self.network.fetchUsers()
+        self.users = self.network.fetchUsers()
 
         //  Règle metiers...
 

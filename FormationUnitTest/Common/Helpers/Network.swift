@@ -8,7 +8,11 @@
 
 import Foundation
 
-class Network {
+protocol NetworkProtocol {
+    func fetchUsers() -> [User]
+}
+
+class Network: NetworkProtocol {
     func fetchUsers() -> [User] {
         return []
     }
