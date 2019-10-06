@@ -16,12 +16,14 @@ class MetiersFaitQuelqueChoseTests: XCTestCase {
     func test_givenInitializeMetiers_whenICallGetUsers_thenIReturnAArrayOfUser() {
         // Given
 
+        let stub = StubNetwork()
+        stub.forcedUsers = [User(identifier: 1, username: "Ben Arfa")]
 
-        let metier = MetiersFaitQuelqueChose(network: FakeNetwork())
+        let sut = MetiersFaitQuelqueChose(network: stub)
 
         // When
 
-        let users = metier.getUsers()
+        let users = sut.getUsers()
 
         // Then
 
@@ -29,9 +31,10 @@ class MetiersFaitQuelqueChoseTests: XCTestCase {
     }
 }
 
-private class FakeNetwork: NetworkProtocol {
+private class StubNetwork: NetworkProtocol {
+    var forcedUsers: [User]!
 
     func fetchUsers() -> [User] {
-        return [User(identifier: 1, username: "Ben Arfa")]
+        return forcedUsers
     }
 }
