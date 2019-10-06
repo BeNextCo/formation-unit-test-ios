@@ -25,4 +25,8 @@ final class MetiersFaitQuelqueChose {
 
         return users
     }
+
+    func userExist(userId: Int) -> Bool {
+        return self.network.fetchUser(by: userId) != nil
+    }
 }

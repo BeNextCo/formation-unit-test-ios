@@ -11,30 +11,74 @@ import XCTest
 @testable import FormationUnitTest
 
 class MetiersFaitQuelqueChoseTests: XCTestCase {
-    // MARK: - Properties
+    /// MARK: - Properties
 
-    func test_givenInitializeMetiers_whenICallGetUsers_thenIReturnAArrayOfUser() {
-        // Given
+    private var network: NetworkProtocolMock!
+    private var sut: MetiersFaitQuelqueChose!
 
-        let stub = StubNetwork()
-        stub.forcedUsers = [User(identifier: 1, username: "Ben Arfa")]
+    override func setUp() {
+        super.setUp()
 
-        let sut = MetiersFaitQuelqueChose(network: stub)
+        self.network = NetworkProtocolMock()
 
-        // When
+        self.sut = MetiersFaitQuelqueChose(network: self.network)
+    }
 
-        let users = sut.getUsers()
+    override func tearDown() {
+        super.tearDown()
 
-        // Then
+        self.network = nil
+        self.sut = nil
+    }
 
-        XCTAssertFalse(users.isEmpty)
+    func test_givenIFetchUser_whenICallUserExist_thenUserExist() {
+        // GIVEN
+
+        self.network.fetchUserByReturnValue = User(identifier: 1, username: "Pepito")
+
+        // WHEN
+
+        let userExist = sut.userExist(userId: 1)
+
+        // THEN
+
+        XCTAssertTrue(userExist)
+        XCTAssertEqual(1, self.network.fetchUserByCallsCount)
+        XCTAssertEqual(1, self.network.fetchUserByReceivedId)
+        XCTAssertFalse(self.network.fetchUsersCalled)
     }
 }
 
-private class StubNetwork: NetworkProtocol {
-    var forcedUsers: [User]!
+private class NetworkProtocolMock: NetworkProtocol {
+
+    //MARK: - fetchUsers
+
+    var fetchUsersCallsCount = 0
+    var fetchUsersCalled: Bool {
+        return fetchUsersCallsCount > 0
+    }
+
+    var fetchUsersReturnValue: [User]!
 
     func fetchUsers() -> [User] {
-        return forcedUsers
+        return fetchUsersReturnValue
+    }
+
+    //MARK: - fetchUser
+
+    var fetchUserByCallsCount = 0
+    var fetchUserByCalled: Bool {
+        return fetchUserByCallsCount > 0
+    }
+
+    var fetchUserByReceivedId: Int?
+
+    var fetchUserByReturnValue: User?
+
+    func fetchUser(by id: Int) -> User? {
+        fetchUserByCallsCount += 1
+        fetchUserByReceivedId = id
+
+        return fetchUserByReturnValue
     }
 }
