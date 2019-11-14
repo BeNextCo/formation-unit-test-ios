@@ -186,8 +186,12 @@ class ArticleDetailViewModel {
 
     func retrieveArticleDetail(success: @escaping (ArticleProtocol) -> Void,
                                failure: @escaping (ArticleDetailViewModelError) -> Void) {
-        self.articleDetailRepository.retrieveArticle(success: { _ in
-            //@TODO
+        self.articleDetailRepository.retrieveArticle(success: { article in
+            guard article.id != nil else {
+                failure(.specific)
+
+                return
+            }
         }, failure: {[weak self] error in
             guard let self = self else { return }
 
