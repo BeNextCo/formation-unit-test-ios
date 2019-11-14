@@ -124,6 +124,32 @@ class ArticleDetailViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
+    func test_givenArticleDetailRepositoryReturnResponseWithoutId_whenRetrieveArticleDetail_thenArticleDetailReturnErrorSpecificMessage() {
+        // Given
+
+        var articleStub = ArticleStub()
+        articleStub.title = "title"
+
+        self.articleDetailRepository.articleResponse = articleStub
+        let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
+        var errorExpected: ArticleDetailViewModelError!
+
+        // When
+
+        sut.retrieveArticleDetail(success: { _ in
+            expectation.fulfill()
+        }, failure: { error in
+            errorExpected = error
+            expectation.fulfill()
+        })
+
+        // Then
+
+        XCTAssertEqual(errorExpected, .specific)
+
+        wait(for: [expectation], timeout: 0.1)
+    }
+
 }
 
 enum ArticleDetailViewModelError: Error {
@@ -131,6 +157,7 @@ enum ArticleDetailViewModelError: Error {
     case error2
     case errorNetwork
     case unknown
+    case specific
 }
 
 class ArticleDetailViewModel {
@@ -173,12 +200,25 @@ class ArticleDetailViewModel {
 // MARK: - ArticleDetailRepositoryProtocol
 
 private class ArticleDetailRepositoryStub: ArticleDetailRepositoryProtocol {
-    var error: ArticleDetailRepositoryError!
+    var error: ArticleDetailRepositoryError?
+    var articleResponse: ArticleProtocol?
 
     func retrieveArticle(success: @escaping ArticleDetailRepositoryStub.retrieveArticleSuccess,
                          failure: @escaping ArticleDetailRepositoryStub.retrieveArticleError) {
-        failure(error)
+
+        if let error = error {
+            failure(error)
+        }
+
+        if let articleResponse = articleResponse {
+            success(articleResponse)
+        }
     }
+}
 
+// MARK: - ArticleProtocol
 
+private struct ArticleStub: ArticleProtocol {
+    var id: String?
+    var title: String?
 }
