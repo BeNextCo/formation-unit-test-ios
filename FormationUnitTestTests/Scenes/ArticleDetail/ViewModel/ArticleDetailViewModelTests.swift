@@ -31,7 +31,7 @@ class ArticleDetailViewModelTests: XCTestCase {
         sut.retrieveArticleDetail(success: { _ in
             expectation.fulfill()
         }, failure: { error in
-            XCTAssert(error != nil)
+            XCTAssert(error == .error1)
             expectation.fulfill()
         })
 
@@ -40,6 +40,10 @@ class ArticleDetailViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
+}
+
+enum ArticleDetailViewModelError: Error {
+    case error1
 }
 
 class ArticleDetailViewModel {
@@ -51,6 +55,12 @@ class ArticleDetailViewModel {
 
     init(articleDetailRepository: ArticleDetailRepositoryProtocol) {
         self.articleDetailRepository = articleDetailRepository
+    }
+
+    func retrieveArticleDetail(success: @escaping (ArticleProtocol) -> Void,
+                               failure: @escaping (ArticleDetailViewModelError) -> Void) {
+        failure(.error1)
+
     }
 }
 
