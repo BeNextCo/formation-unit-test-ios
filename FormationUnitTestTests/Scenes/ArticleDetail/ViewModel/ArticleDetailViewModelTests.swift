@@ -101,12 +101,36 @@ class ArticleDetailViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
+    func test_givenArticleDetailRepositoryReturnErreurUnknown_whenRetrieveArticleDetail_thenArticleDetailReturnErrorUnknownMessage() {
+        // Given
+
+        self.articleDetailRepository.error = .unknown
+        let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
+        var errorExpected: ArticleDetailViewModelError!
+
+        // When
+
+        sut.retrieveArticleDetail(success: { _ in
+            expectation.fulfill()
+        }, failure: { error in
+            errorExpected = error
+            expectation.fulfill()
+        })
+
+        // Then
+
+        XCTAssertEqual(errorExpected, .unknown)
+
+        wait(for: [expectation], timeout: 0.1)
+    }
+
 }
 
 enum ArticleDetailViewModelError: Error {
     case error1
     case error2
     case errorNetwork
+    case unknown
 }
 
 class ArticleDetailViewModel {
@@ -128,8 +152,8 @@ class ArticleDetailViewModel {
             return .error2
         case .networkErreur:
             return .errorNetwork
-        default:
-            return .error1
+        case .unknown:
+            return .unknown
         }
     }
 
