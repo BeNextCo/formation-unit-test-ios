@@ -12,18 +12,27 @@ import XCTest
 
 class ArticleDetailViewModelTests: XCTestCase {
 
-    override func setUp() {
+    // MARK: - Properties
 
+    private var sut: ArticleDetailViewModel!
+    private var articleDetailRepository: ArticleDetailRepositoryStub!
+
+    override func setUp() {
+        super.setUp()
+
+        self.articleDetailRepository = ArticleDetailRepositoryStub()
+        self.sut = ArticleDetailViewModel(articleDetailRepository: self.articleDetailRepository)
     }
 
     override func tearDown() {
+        self.articleDetailRepository = nil
+        self.sut = nil
 
+        super.tearDown()
     }
 
     func test_givenArticleDetailRepositoryReturnErreur1_whenRetrieveArticleDetail_thenArticleDetailReturnError1Message() {
         // Given
-        let sut = ArticleDetailViewModel(articleDetailRepository: ArticleDetailRepositoryStub())
-
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
 
         // When
