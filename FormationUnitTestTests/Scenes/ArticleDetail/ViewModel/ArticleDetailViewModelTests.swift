@@ -34,7 +34,10 @@ class ArticleDetailViewModelTests: XCTestCase {
     func test_givenArticleDetailRepositoryReturnErreur1_whenRetrieveArticleDetail_thenArticleDetailReturnError1Message() {
         // Given
 
-        self.articleDetailRepository.error = .erreur1
+        self.articleDetailRepository.retrieveArticleClosure = { _, failure in
+            failure(.erreur1)
+        }
+
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
 
         var errorExpected: ArticleDetailViewModelError!
@@ -59,7 +62,10 @@ class ArticleDetailViewModelTests: XCTestCase {
     func test_givenArticleDetailRepositoryReturnErreur2_whenRetrieveArticleDetail_thenArticleDetailReturnError2Message() {
         // Given
 
-        self.articleDetailRepository.error = .erreur2
+        self.articleDetailRepository.retrieveArticleClosure = { _, failure in
+            failure(.erreur2)
+        }
+
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
         var errorExpected: ArticleDetailViewModelError!
 
@@ -83,7 +89,10 @@ class ArticleDetailViewModelTests: XCTestCase {
     func test_givenArticleDetailRepositoryReturnErreurNetwork_whenRetrieveArticleDetail_thenArticleDetailReturnErrorNetworkMessage() {
         // Given
 
-        self.articleDetailRepository.error = .networkErreur
+        self.articleDetailRepository.retrieveArticleClosure = { _, failure in
+            failure(.networkErreur)
+        }
+
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
         var errorExpected: ArticleDetailViewModelError!
 
@@ -107,7 +116,10 @@ class ArticleDetailViewModelTests: XCTestCase {
     func test_givenArticleDetailRepositoryReturnErreurUnknown_whenRetrieveArticleDetail_thenArticleDetailReturnErrorUnknownMessage() {
         // Given
 
-        self.articleDetailRepository.error = .unknown
+        self.articleDetailRepository.retrieveArticleClosure = { _, failure in
+            failure(.unknown)
+        }
+
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
         var errorExpected: ArticleDetailViewModelError!
 
@@ -131,10 +143,13 @@ class ArticleDetailViewModelTests: XCTestCase {
     func test_givenArticleDetailRepositoryReturnResponseWithoutId_whenRetrieveArticleDetail_thenArticleDetailReturnErrorSpecificMessage() {
         // Given
 
-        var articleStub = ArticleStub()
-        articleStub.title = "title"
+        self.articleDetailRepository.retrieveArticleClosure = { success, _ in
+            var articleStub = ArticleStub()
+            articleStub.title = "title"
 
-        self.articleDetailRepository.articleResponse = articleStub
+            success(articleStub)
+        }
+
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
         var errorExpected: ArticleDetailViewModelError!
 
@@ -158,10 +173,13 @@ class ArticleDetailViewModelTests: XCTestCase {
     func test_givenArticleDetailRepositoryReturnResponseWithoutTitle_whenRetrieveArticleDetail_thenArticleDetailReturnErrorSpecificMessage() {
         // Given
 
-        var articleStub = ArticleStub()
-        articleStub.id = "id"
+        self.articleDetailRepository.retrieveArticleClosure = { success, _ in
+            var articleStub = ArticleStub()
+            articleStub.id = "id"
 
-        self.articleDetailRepository.articleResponse = articleStub
+            success(articleStub)
+        }
+
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
         var errorExpected: ArticleDetailViewModelError!
 
@@ -239,21 +257,14 @@ private class ArticleDetailRepositoryMock: ArticleDetailRepositoryProtocol {
     // MARK: - Properties
 
     var retrieveArticleCallCount = 0
-    var error: ArticleDetailRepositoryError?
-    var articleResponse: ArticleProtocol?
+    var retrieveArticleClosure: ((@escaping ArticleDetailRepositoryMock.retrieveArticleSuccess, @escaping ArticleDetailRepositoryMock.retrieveArticleError) -> Void)?
 
     func retrieveArticle(success: @escaping ArticleDetailRepositoryMock.retrieveArticleSuccess,
                          failure: @escaping ArticleDetailRepositoryMock.retrieveArticleError) {
 
         self.retrieveArticleCallCount += 1
 
-        if let error = error {
-            failure(error)
-        }
-
-        if let articleResponse = articleResponse {
-            success(articleResponse)
-        }
+       self.retrieveArticleClosure?(success, failure)
     }
 }
 
