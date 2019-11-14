@@ -33,7 +33,7 @@ class ArticleDetailViewModelTests: XCTestCase {
 
     func test_givenArticleDetailRepositoryReturnErreur1_whenRetrieveArticleDetail_thenArticleDetailReturnError1Message() {
         // Given
-
+        self.articleDetailRepository.error = .erreur1
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
 
         // When
@@ -50,10 +50,30 @@ class ArticleDetailViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
+    func test_givenArticleDetailRepositoryReturnErreur2_whenRetrieveArticleDetail_thenArticleDetailReturnError2Message() {
+        // Given
+        self.articleDetailRepository.error = .erreur2
+        let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
+
+        // When
+
+        sut.retrieveArticleDetail(success: { _ in
+            expectation.fulfill()
+        }, failure: { error in
+            XCTAssert(error == .error2)
+            expectation.fulfill()
+        })
+
+        // Then
+
+        wait(for: [expectation], timeout: 0.1)
+    }
+
 }
 
 enum ArticleDetailViewModelError: Error {
     case error1
+    case error2
 }
 
 class ArticleDetailViewModel {
@@ -72,8 +92,13 @@ class ArticleDetailViewModel {
         self.articleDetailRepository.retrieveArticle(success: { _ in
             //@TODO
         }, failure: { error in
-            if error == .erreur1 {
+            switch error {
+            case .erreur1:
                 failure(.error1)
+            case .erreur2:
+                failure(.error2)
+            default:
+                break
             }
         })
 
@@ -83,9 +108,11 @@ class ArticleDetailViewModel {
 // MARK: - ArticleDetailRepositoryProtocol
 
 private class ArticleDetailRepositoryStub: ArticleDetailRepositoryProtocol {
+    var error: ArticleDetailRepositoryError!
+
     func retrieveArticle(success: @escaping ArticleDetailRepositoryStub.retrieveArticleSuccess,
                          failure: @escaping ArticleDetailRepositoryStub.retrieveArticleError) {
-        failure(.erreur1)
+        failure(error)
     }
 
 
