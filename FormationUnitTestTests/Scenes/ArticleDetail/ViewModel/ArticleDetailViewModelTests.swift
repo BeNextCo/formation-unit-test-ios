@@ -33,38 +33,70 @@ class ArticleDetailViewModelTests: XCTestCase {
 
     func test_givenArticleDetailRepositoryReturnErreur1_whenRetrieveArticleDetail_thenArticleDetailReturnError1Message() {
         // Given
+
         self.articleDetailRepository.error = .erreur1
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
+
+        var errorExpected: ArticleDetailViewModelError!
 
         // When
 
         sut.retrieveArticleDetail(success: { _ in
             expectation.fulfill()
         }, failure: { error in
-            XCTAssert(error == .error1)
+            errorExpected = error
             expectation.fulfill()
         })
 
         // Then
+
+        XCTAssertEqual(errorExpected, .error1)
 
         wait(for: [expectation], timeout: 0.1)
     }
 
     func test_givenArticleDetailRepositoryReturnErreur2_whenRetrieveArticleDetail_thenArticleDetailReturnError2Message() {
         // Given
+
         self.articleDetailRepository.error = .erreur2
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
+        var errorExpected: ArticleDetailViewModelError!
 
         // When
 
         sut.retrieveArticleDetail(success: { _ in
             expectation.fulfill()
         }, failure: { error in
-            XCTAssert(error == .error2)
+            errorExpected = error
             expectation.fulfill()
         })
 
         // Then
+
+        XCTAssertEqual(errorExpected, .error2)
+
+        wait(for: [expectation], timeout: 0.1)
+    }
+
+    func test_givenArticleDetailRepositoryReturnErreurNetwork_whenRetrieveArticleDetail_thenArticleDetailReturnErrorNetworkMessage() {
+        // Given
+
+        self.articleDetailRepository.error = .networkErreur
+        let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
+        var errorExpected: ArticleDetailViewModelError!
+
+        // When
+
+        sut.retrieveArticleDetail(success: { _ in
+            expectation.fulfill()
+        }, failure: { error in
+            errorExpected = error
+            expectation.fulfill()
+        })
+
+        // Then
+
+        XCTAssertEqual(errorExpected, .errorNetwork)
 
         wait(for: [expectation], timeout: 0.1)
     }
@@ -74,6 +106,7 @@ class ArticleDetailViewModelTests: XCTestCase {
 enum ArticleDetailViewModelError: Error {
     case error1
     case error2
+    case errorNetwork
 }
 
 class ArticleDetailViewModel {
@@ -87,19 +120,27 @@ class ArticleDetailViewModel {
         self.articleDetailRepository = articleDetailRepository
     }
 
+    private func handleArticleRepositoryError(_ error: ArticleDetailRepositoryError) -> ArticleDetailViewModelError {
+        switch error {
+        case .erreur1:
+            return .error1
+        case .erreur2:
+            return .error2
+        case .networkErreur:
+            return .errorNetwork
+        default:
+            return .error1
+        }
+    }
+
     func retrieveArticleDetail(success: @escaping (ArticleProtocol) -> Void,
                                failure: @escaping (ArticleDetailViewModelError) -> Void) {
         self.articleDetailRepository.retrieveArticle(success: { _ in
             //@TODO
-        }, failure: { error in
-            switch error {
-            case .erreur1:
-                failure(.error1)
-            case .erreur2:
-                failure(.error2)
-            default:
-                break
-            }
+        }, failure: {[weak self] error in
+            guard let self = self else { return }
+
+            failure(self.handleArticleRepositoryError(error))
         })
 
     }
