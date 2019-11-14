@@ -150,6 +150,32 @@ class ArticleDetailViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 0.1)
     }
 
+    func test_givenArticleDetailRepositoryReturnResponseWithoutTitle_whenRetrieveArticleDetail_thenArticleDetailReturnErrorSpecificMessage() {
+        // Given
+
+        var articleStub = ArticleStub()
+        articleStub.id = "id"
+
+        self.articleDetailRepository.articleResponse = articleStub
+        let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
+        var errorExpected: ArticleDetailViewModelError!
+
+        // When
+
+        sut.retrieveArticleDetail(success: { _ in
+            expectation.fulfill()
+        }, failure: { error in
+            errorExpected = error
+            expectation.fulfill()
+        })
+
+        // Then
+
+        XCTAssertEqual(errorExpected, .specific)
+
+        wait(for: [expectation], timeout: 0.1)
+    }
+
 }
 
 enum ArticleDetailViewModelError: Error {
@@ -187,7 +213,7 @@ class ArticleDetailViewModel {
     func retrieveArticleDetail(success: @escaping (ArticleProtocol) -> Void,
                                failure: @escaping (ArticleDetailViewModelError) -> Void) {
         self.articleDetailRepository.retrieveArticle(success: { article in
-            guard article.id != nil else {
+            guard article.id != nil, article.title != nil else {
                 failure(.specific)
 
                 return
