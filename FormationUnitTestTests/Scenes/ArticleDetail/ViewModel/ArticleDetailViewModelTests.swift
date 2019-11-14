@@ -33,6 +33,7 @@ class ArticleDetailViewModelTests: XCTestCase {
 
     func test_givenArticleDetailRepositoryReturnErreur1_whenRetrieveArticleDetail_thenArticleDetailReturnError1Message() {
         // Given
+
         let expectation = XCTestExpectation(description: "ArticleDetailRepositoryStub expectation")
 
         // When
@@ -68,7 +69,13 @@ class ArticleDetailViewModel {
 
     func retrieveArticleDetail(success: @escaping (ArticleProtocol) -> Void,
                                failure: @escaping (ArticleDetailViewModelError) -> Void) {
-        failure(.error1)
+        self.articleDetailRepository.retrieveArticle(success: { _ in
+            //@TODO
+        }, failure: { error in
+            if error == .erreur1 {
+                failure(.error1)
+            }
+        })
 
     }
 }
@@ -78,7 +85,7 @@ class ArticleDetailViewModel {
 private class ArticleDetailRepositoryStub: ArticleDetailRepositoryProtocol {
     func retrieveArticle(success: @escaping ArticleDetailRepositoryStub.retrieveArticleSuccess,
                          failure: @escaping ArticleDetailRepositoryStub.retrieveArticleError) {
-        //@TODO:
+        failure(.erreur1)
     }
 
 
