@@ -15,12 +15,12 @@ class ArticleDetailViewModelTests: XCTestCase {
     // MARK: - Properties
 
     private var sut: ArticleDetailViewModel!
-    private var articleDetailRepository: ArticleDetailRepositoryStub!
+    private var articleDetailRepository: ArticleDetailRepositoryMock!
 
     override func setUp() {
         super.setUp()
 
-        self.articleDetailRepository = ArticleDetailRepositoryStub()
+        self.articleDetailRepository = ArticleDetailRepositoryMock()
         self.sut = ArticleDetailViewModel(articleDetailRepository: self.articleDetailRepository)
     }
 
@@ -51,6 +51,7 @@ class ArticleDetailViewModelTests: XCTestCase {
         // Then
 
         XCTAssertEqual(errorExpected, .error1)
+        XCTAssertEqual(self.articleDetailRepository.retrieveArticleCallCount, 1)
 
         wait(for: [expectation], timeout: 0.1)
     }
@@ -74,6 +75,7 @@ class ArticleDetailViewModelTests: XCTestCase {
         // Then
 
         XCTAssertEqual(errorExpected, .error2)
+        XCTAssertEqual(self.articleDetailRepository.retrieveArticleCallCount, 1)
 
         wait(for: [expectation], timeout: 0.1)
     }
@@ -97,6 +99,7 @@ class ArticleDetailViewModelTests: XCTestCase {
         // Then
 
         XCTAssertEqual(errorExpected, .errorNetwork)
+        XCTAssertEqual(self.articleDetailRepository.retrieveArticleCallCount, 1)
 
         wait(for: [expectation], timeout: 0.1)
     }
@@ -120,6 +123,7 @@ class ArticleDetailViewModelTests: XCTestCase {
         // Then
 
         XCTAssertEqual(errorExpected, .unknown)
+        XCTAssertEqual(self.articleDetailRepository.retrieveArticleCallCount, 1)
 
         wait(for: [expectation], timeout: 0.1)
     }
@@ -146,6 +150,7 @@ class ArticleDetailViewModelTests: XCTestCase {
         // Then
 
         XCTAssertEqual(errorExpected, .specific)
+        XCTAssertEqual(self.articleDetailRepository.retrieveArticleCallCount, 1)
 
         wait(for: [expectation], timeout: 0.1)
     }
@@ -172,6 +177,7 @@ class ArticleDetailViewModelTests: XCTestCase {
         // Then
 
         XCTAssertEqual(errorExpected, .specific)
+        XCTAssertEqual(self.articleDetailRepository.retrieveArticleCallCount, 1)
 
         wait(for: [expectation], timeout: 0.1)
     }
@@ -229,12 +235,17 @@ class ArticleDetailViewModel {
 
 // MARK: - ArticleDetailRepositoryProtocol
 
-private class ArticleDetailRepositoryStub: ArticleDetailRepositoryProtocol {
+private class ArticleDetailRepositoryMock: ArticleDetailRepositoryProtocol {
+    // MARK: - Properties
+
+    var retrieveArticleCallCount = 0
     var error: ArticleDetailRepositoryError?
     var articleResponse: ArticleProtocol?
 
-    func retrieveArticle(success: @escaping ArticleDetailRepositoryStub.retrieveArticleSuccess,
-                         failure: @escaping ArticleDetailRepositoryStub.retrieveArticleError) {
+    func retrieveArticle(success: @escaping ArticleDetailRepositoryMock.retrieveArticleSuccess,
+                         failure: @escaping ArticleDetailRepositoryMock.retrieveArticleError) {
+
+        self.retrieveArticleCallCount += 1
 
         if let error = error {
             failure(error)
