@@ -34,6 +34,6 @@ class ArticleDetailRepository {
 // MARK: - ArticleDetailRepositoryProtocol
 extension ArticleDetailRepository: ArticleDetailRepositoryProtocol {
     func retrieveArticle(success: @escaping retrieveArticleSuccess, failure: @escaping retrieveArticleError) {
-        
+
     }
 }
